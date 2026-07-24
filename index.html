@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小孩外出攜帶清單</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxODAgMTgwIj48cmVjdCB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgcng9IjI0IiBmaWxsPSIjRkZGNEU2Ii8+PHJlY3QgeD0iMzgiIHk9IjY2IiB3aWR0aD0iMTA0IiBoZWlnaHQ9IjkwIiByeD0iMTgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0YyODgzQyIgc3Ryb2tlLXdpZHRoPSIxMCIvPjxwYXRoIGQ9Ik02NiA2NiBWNTQgYTI0IDI0IDAgMCAxIDQ4IDAgVjY2IiBmaWxsPSJub25lIiBzdHJva2U9IiNGMjg4M0MiIHN0cm9rZS13aWR0aD0iMTAiLz48cmVjdCB4PSI2MiIgeT0iOTYiIHdpZHRoPSI1NiIgaGVpZ2h0PSIyMiIgcng9IjgiIGZpbGw9IiM0MEE5RDQiIHN0cm9rZT0ibm9uZSIvPjwvc3ZnPgo=">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="小孩外出清單">
+<meta name="theme-color" content="#FFF9F0">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Helvetica Neue',Arial,sans-serif;background:#FFF9F0;min-height:100vh;padding:2rem 1rem}
+.wrap{max-width:680px;margin:0 auto;padding:2rem 1.5rem}
+.title{font-size:24px;font-weight:600;color:#F2883C;letter-spacing:.04em}
+.subtitle{font-size:15px;color:#A89484;margin-top:4px;margin-bottom:1.5rem;letter-spacing:.03em}
+.divider{height:2px;background:#FFE3C4;border-radius:2px;margin-bottom:1.5rem}
+.wizard{display:flex;flex-direction:column;gap:1.5rem}
+.q-label{font-size:16px;color:#5C4B3C;font-weight:600;margin-bottom:10px;letter-spacing:.04em}
+.q-sub{font-size:13px;color:#BBA894;margin-bottom:10px;margin-top:-6px}
+#trip-name::placeholder{color:#D9CCBD;opacity:1}
+#trip-name::-webkit-input-placeholder{color:#D9CCBD}
+.q-options{display:flex;flex-wrap:wrap;gap:8px}
+.q-opt{padding:9px 20px;border:2px solid #FFDCB8;border-radius:22px;background:#FFFFFF;color:#7A6654;cursor:pointer;font-size:15px;letter-spacing:.03em;transition:all .15s;user-select:none}
+.q-opt:hover{border-color:#F2883C;color:#F2883C}
+.q-opt.selected{background:#F2883C;color:#FFFFFF;border-color:#F2883C}
+.q-block{transition:opacity .2s}
+.q-block.dimmed{opacity:.35;pointer-events:none}
+.start-btn{margin-top:.5rem;padding:15px;border:2px solid #F2883C;border-radius:14px;background:#F2883C;color:#FFFFFF;font-size:16px;font-weight:600;letter-spacing:.08em;cursor:pointer;width:100%;transition:all .15s}
+.start-btn:hover{background:#E2761F;border-color:#E2761F}
+.start-btn:disabled{background:#FFFFFF;color:#D6C4B2;border-color:#FFE3C4;cursor:not-allowed}
+.checklist-view{display:none}
+.back-btn{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:#A89484;cursor:pointer;margin-bottom:1.25rem;background:none;border:none;padding:0;letter-spacing:.04em}
+.back-btn:hover{color:#F2883C}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1.25rem}
+.tag{padding:5px 14px;border-radius:20px;background:#FFF0DC;color:#C97A2E;font-size:13px;letter-spacing:.05em}
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.progress-label{font-size:14px;color:#A89484;letter-spacing:.03em}
+.progress-bar{height:8px;background:#FFEEDA;border-radius:8px;overflow:hidden;margin-bottom:1.5rem}
+.progress-fill{height:100%;background:#5CC08A;border-radius:8px;transition:width .3s}
+.mini-btn{padding:6px 14px;border:2px solid #FFDCB8;border-radius:18px;background:#FFFFFF;color:#A89484;cursor:pointer;font-size:13px;letter-spacing:.04em}
+.mini-btn:hover{border-color:#F2883C;color:#F2883C}
+.mini-btn.on{background:#FFF0DC;border-color:#F2883C;color:#C97A2E}
+.kid-row{display:flex;gap:8px;margin-bottom:1.25rem}
+.kid-tab{flex:1;padding:11px 0;text-align:center;border:2px solid #FFDCB8;border-radius:14px;background:#FFFFFF;color:#A89484;cursor:pointer;font-size:16px;font-weight:600;letter-spacing:.04em}
+.kid-tab.active{background:#F2883C;color:#FFFFFF;border-color:#F2883C}
+.kid-tab .kid-count{font-size:13px;font-weight:400;opacity:.8;margin-left:8px}
+.rb{display:inline-flex;align-items:center;vertical-align:middle;line-height:1;margin-right:3px}
+.rb-z{position:relative;display:inline-block;font-size:11px;line-height:1;font-weight:400;color:#BCA895;margin-left:2px;padding-right:.62em}
+.rb-z.lt{padding-top:.95em}
+.zb{writing-mode:vertical-rl;display:block;line-height:1;white-space:nowrap}
+.tn{position:absolute;right:0;bottom:.16em;line-height:1}
+.tn.lt{right:.62em;left:0;top:0;bottom:auto;text-align:center}
+.kid-tab .rb-z{font-size:9px;color:currentColor;opacity:.7}
+.cat-header .rb-z{font-size:9px;color:currentColor;opacity:.7}
+.category{background:#FFFFFF;border-radius:16px;padding:14px 14px 10px;margin-bottom:14px}
+.cat-header{font-size:15px;font-weight:600;padding:2px 0 10px;display:flex;align-items:center;gap:8px;letter-spacing:.05em}
+.cat-header i{font-size:19px}
+.cat-header .cat-count{margin-left:auto;font-size:13px;font-weight:400;color:#C4B4A4}
+.cat-items{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+@media(max-width:480px){.cat-items{grid-template-columns:1fr}}
+.item{display:flex;align-items:center;gap:10px;padding:11px 10px;border:2px solid transparent;border-radius:12px;cursor:pointer;transition:background .1s}
+.item:hover{background:#FFF6EA}
+.item.checked{background:#EAF8EF;border-color:#C4EBD3}
+.item.checked .item-label{color:#7FB894;text-decoration:line-through;text-decoration-color:#A9DCBD}
+.item.checked .rb-z{color:#A9DCBD}
+.item input[type=checkbox]{accent-color:#5CC08A;width:20px;height:20px;flex-shrink:0}
+.item-ic{font-size:22px;line-height:1;flex-shrink:0;width:1.35em;text-align:center}
+.item.sub .item-ic,.item.todo .item-ic{font-size:18px}
+.item.checked .item-ic{opacity:.45}
+.item-label{font-size:20px;color:#4A3B2E;letter-spacing:.02em;line-height:1.3;flex:1;min-width:0}
+.item-qty{font-size:12px;color:#E09A4E;background:#FFF0DC;border-radius:10px;padding:2px 8px;margin-left:6px;letter-spacing:.04em;flex-shrink:0;white-space:nowrap;align-self:center}
+.item.checked .item-qty{color:#C4B4A4;background:#F0EDE6}
+.item.full{grid-column:1/-1}
+.item.sub{grid-column:1/-1;margin-left:18px;border-left:3px solid #FFDCB8;border-radius:0 12px 12px 0;padding-left:12px}
+.item.sub .item-label{font-size:17px;color:#8A7460}
+.item.sub input[type=checkbox]{width:17px;height:17px}
+.item.todo{grid-column:1/-1;margin-left:18px;border-left:3px solid #7BC5E0;border-radius:0 12px 12px 0;padding-left:12px;background:#F0FAFD}
+.item.todo .item-label{font-size:17px;color:#3A8FAD}
+.item.todo .rb-z{color:#9CC9DA}
+.item.todo input[type=checkbox]{accent-color:#3A9FC4;width:17px;height:17px}
+.item.todo.checked{background:#E3F4FA;border-color:transparent;border-left-color:#7BC5E0}
+.item.todo.checked .item-label{color:#9CC9DA;text-decoration:line-through;text-decoration-color:#B8DDEA}
+.submit-area{margin-top:1.75rem}
+.submit-btn{width:100%;padding:15px;border:none;border-radius:14px;background:#5CC08A;color:#FFFFFF;font-size:16px;font-weight:600;letter-spacing:.08em;cursor:pointer;transition:all .15s}
+.submit-btn:hover{background:#48A874}
+.history-title{font-size:16px;font-weight:600;color:#5C4B3C;letter-spacing:.05em;margin-bottom:1rem}
+.history-entry{background:#FFFFFF;border-radius:16px;padding:1rem 1.1rem;margin-bottom:12px}
+.history-date{font-size:13px;color:#A89484;letter-spacing:.04em;margin-bottom:6px}
+.history-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.history-tag{font-size:11px;padding:3px 11px;border-radius:14px;background:#FFF0DC;color:#C97A2E;letter-spacing:.04em}
+.history-items{font-size:13px;color:#7A6654;line-height:2}
+.history-checked{color:#4A9E70}
+.history-unchecked{color:#D6C4B2;text-decoration:line-through}
+.tab-row{display:flex;gap:8px;margin-bottom:1.5rem}
+.tab{padding:11px 20px;border:2px solid #FFDCB8;border-radius:14px;background:#FFFFFF;color:#A89484;cursor:pointer;font-size:15px;font-weight:600;letter-spacing:.05em;flex:1;text-align:center}
+.tab.active{background:#F2883C;color:#FFFFFF;border-color:#F2883C}
+.empty-history{font-size:14px;color:#BBA894;text-align:center;padding:2rem 0;letter-spacing:.04em}
+.success-banner{background:#EAF8EF;border:2px solid #C4EBD3;border-radius:14px;padding:.9rem 1.1rem;margin-bottom:1.25rem;display:none}
+.success-banner p{font-size:14px;color:#4A9E70;letter-spacing:.03em}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="title" data-zy="ㄒㄧㄠˇ ㄏㄞˊ ㄨㄞˋ ㄔㄨ ㄒㄧ ㄉㄞˋ ㄑㄧㄥ ㄉㄢ">小孩外出攜帶清單</div>
+  <div class="subtitle">回答幾個問題，整理這次小孩要帶的東西</div>
+  <div class="divider"></div>
+
+  <div class="tab-row">
+    <div class="tab active" onclick="switchTab('checklist-tab')" data-zy="ㄑㄧㄥ ㄉㄢ">清單</div>
+    <div class="tab" onclick="switchTab('history-tab')" data-zy="ㄔㄨ ㄒㄧㄥˊ ㄐㄧˋ ㄌㄨˋ">出行記錄</div>
+  </div>
+
+  <div id="checklist-tab">
+    <div class="wizard" id="wizard">
+      <div class="q-block">
+        <div class="q-label" data-zy="ㄒㄧㄥˊ ㄔㄥˊ ㄇㄧㄥˊ ㄔㄥ">行程名稱</div>
+        <input id="trip-name" type="text" placeholder="例：墾丁兩天一夜（選填）" style="width:100%;padding:12px 16px;border:2px solid #FFDCB8;border-radius:14px;background:#FFFFFF;font-size:15px;color:#4A3B2E;outline:none;letter-spacing:.03em">
+      </div>
+      <div class="q-block">
+        <div class="q-label" data-zy="ㄓㄜˋ ㄘˋ ㄕㄟˊ ㄧㄠˋ ㄑㄩˋ">1 — 這次誰要去？</div>
+        <div class="q-options" id="q-who">
+          <div class="q-opt" data-val="both" data-zy="ㄌㄧㄤˇ ˙ㄍㄜ ㄉㄡ ㄑㄩˋ">兩個都去</div>
+          <div class="q-opt" data-val="a" data-zy="ㄍㄜ ˙ㄍㄜ">哥哥</div>
+          <div class="q-opt" data-val="b" data-zy="ㄉㄧˋ ˙ㄉㄧ">弟弟</div>
+        </div>
+      </div>
+      <div class="q-block">
+        <div class="q-label" data-zy="ㄓㄜˋ ㄘˋ ㄑㄩˋ ㄐㄧˇ ㄊㄧㄢ">2 — 這次去幾天？</div>
+        <div class="q-options" id="q-days">
+          <div class="q-opt" data-val="1" data-zy="ㄊㄧㄢ">1 天</div>
+          <div class="q-opt" data-val="2" data-zy="ㄊㄧㄢ">2 天</div>
+          <div class="q-opt" data-val="3" data-zy="ㄊㄧㄢ">3 天</div>
+          <div class="q-opt" data-val="4" data-zy="ㄊㄧㄢ">4 天</div>
+          <div class="q-opt" data-val="5" data-zy="ㄊㄧㄢ">5 天</div>
+          <div class="q-opt" data-val="custom" data-zy="ㄍㄥˋ ㄐㄧㄡˇ">更久</div>
+        </div>
+        <div id="days-custom" style="display:none;margin-top:10px">
+          <input id="days-input" type="number" min="1" max="30" placeholder="輸入天數（最多 30 天）" style="width:100%;padding:12px 16px;border:2px solid #FFDCB8;border-radius:14px;background:#FFFFFF;font-size:15px;color:#4A3B2E;outline:none;letter-spacing:.03em">
+        </div>
+        <div class="q-sub" id="days-hint" style="margin:10px 0 0"></div>
+      </div>
+      <div class="q-block">
+        <div class="q-label" data-zy="ㄧㄡˇ ㄧㄡˊ ㄩㄥˇ ㄒㄧㄥˊ ㄔㄥˊ ˙ㄇㄚ">3 — 有游泳行程嗎？</div>
+        <div class="q-options" id="q-swim">
+          <div class="q-opt" data-val="yes" data-zy="ㄧㄡˇ">有</div>
+          <div class="q-opt" data-val="no" data-zy="ㄇㄟˊ ㄧㄡˇ">沒有</div>
+        </div>
+      </div>
+      <div class="q-block">
+        <div class="q-label" data-zy="ㄧㄡˇ ㄉㄚ ㄏㄨㄛˇ ㄔㄜ ㄏㄨㄛˋ ㄍㄠ ㄊㄧㄝˇ ˙ㄇㄚ">4 — 有搭火車或高鐵嗎？</div>
+        <div class="q-options" id="q-train">
+          <div class="q-opt" data-val="yes" data-zy="ㄧㄡˇ">有</div>
+          <div class="q-opt" data-val="no" data-zy="ㄇㄟˊ ㄧㄡˇ">沒有</div>
+        </div>
+      </div>
+      <div class="q-block" id="qb-eng">
+        <div class="q-label" data-zy="ㄍㄜ ˙ㄍㄜ ㄧㄠˋ ㄕㄨㄣˋ ㄅㄧㄢˋ ㄕㄤˋ ㄧㄥ ㄨㄣˊ ㄎㄜˋ ˙ㄇㄚ">5 — 哥哥要順便上英文課嗎？</div>
+        <div class="q-sub">只有弟弟去時不適用</div>
+        <div class="q-options" id="q-eng">
+          <div class="q-opt" data-val="yes" data-zy="ㄧㄠˋ ㄕㄤˋ ㄎㄜˋ">要上課</div>
+          <div class="q-opt" data-val="no" data-zy="ㄅㄨˊ ㄩㄥˋ">不用</div>
+        </div>
+      </div>
+      <button class="start-btn" id="start-btn" disabled onclick="buildChecklist()" data-zy="ㄔㄢˇ ㄕㄥ ㄑㄧㄥ ㄉㄢ">產生清單</button>
+      <button class="start-btn" style="background:#FFFFFF;color:#A89484;border-color:#FFDCB8;margin-top:0" onclick="buildAll()" data-zy="ㄑㄩㄢˊ ㄅㄨˋ ㄌㄧㄝˋ ㄔㄨ ㄅㄨˋ ㄕㄞ ㄒㄩㄢˇ ㄑㄧㄥˊ ㄐㄧㄥˋ">全部列出（不篩選情境）</button>
+    </div>
+
+    <div class="checklist-view" id="checklist-view">
+      <button class="back-btn" onclick="goBack()"><i class="ti ti-arrow-left"></i> <span data-zy="ㄔㄨㄥˊ ㄒㄧㄣ ㄒㄩㄢˇ ㄗㄜˊ">重新選擇</span></button>
+      <div class="success-banner" id="success-banner"><p></p></div>
+      <div class="success-banner" id="resume-banner" style="display:none"><p>↩ 已恢復上次未完成的清單</p></div>
+      <div class="tags" id="tags"></div>
+      <div class="kid-row" id="kid-row"></div>
+      <div class="toolbar">
+        <div class="progress-label" id="progress-label">0 / 0 已確認</div>
+        <div style="display:flex;gap:6px">
+          <button class="mini-btn on" id="zy-btn" onclick="toggleZhuyin()" data-zy="ㄓㄨˋ ㄧㄣ">注音</button>
+          <button class="mini-btn" onclick="resetAll()" data-zy="ㄔㄨㄥˊ ㄕㄜˋ">重設</button>
+        </div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div id="checklist"></div>
+      <div class="submit-area">
+        <button class="submit-btn" onclick="submitRecord()" data-zy="ㄙㄨㄥˋ ㄔㄨ ㄅㄧㄥˋ ㄐㄧˋ ㄌㄨˋ">送出並記錄</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="history-tab" style="display:none">
+    <div class="history-title">出行記錄</div>
+    <div id="history-list"></div>
+  </div>
+</div>
+
+<script>
+const KIDS={a:{name:'哥哥',zy:'ㄍㄜ ˙ㄍㄜ'},b:{name:'弟弟',zy:'ㄉㄧˋ ˙ㄉㄧ'}};
+const CATS={
+  clothes:{label:'衣物',zy:'ㄧ ㄨˋ',icon:'ti-shirt',color:'#F2883C'},
+  swim:{label:'游泳',zy:'ㄧㄡˊ ㄩㄥˇ',icon:'ti-ripple',color:'#3A9FC4'},
+  sleep:{label:'睡覺用品',zy:'ㄕㄨㄟˋ ㄐㄧㄠˋ ㄩㄥˋ ㄆㄧㄣˇ',icon:'ti-moon',color:'#8B7BC9'},
+  bag:{label:'隨身揹包',zy:'ㄙㄨㄟˊ ㄕㄣ ㄅㄟ ㄅㄠ',icon:'ti-backpack',color:'#4FA96A'},
+  hygiene:{label:'盥洗用品',zy:'ㄍㄨㄢˋ ㄒㄧˇ ㄩㄥˋ ㄆㄧㄣˇ',icon:'ti-droplet',color:'#2FA396'},
+  train:{label:'搭火車／高鐵',zy:'ㄉㄚ ㄏㄨㄛˇ ㄔㄜ ㄍㄠ ㄊㄧㄝˇ',icon:'ti-train',color:'#5B7FC7'},
+  study:{label:'英文課',zy:'ㄧㄥ ㄨㄣˊ ㄎㄜˋ',icon:'ti-device-ipad',color:'#DE6E9E'}
+};
+const BASE_ITEMS=[
+  {id:1,label:'衣服',zy:'ㄧ ㄈㄨˊ',ic:'👕',cat:'clothes',tags:['always'],perSet:true},
+  {id:2,label:'褲子',zy:'ㄎㄨˋ ˙ㄗ',ic:'👖',cat:'clothes',tags:['always'],perSet:true},
+  {id:3,label:'內褲',zy:'ㄋㄟˋ ㄎㄨˋ',ic:'🩲',cat:'clothes',tags:['always'],perSet:true},
+  {id:4,label:'襪子',zy:'ㄨㄚˋ ˙ㄗ',ic:'🧦',cat:'clothes',tags:['always'],perSet:true},
+  {id:5,label:'髒衣服袋',zy:'ㄗㄤ ㄧ ㄈㄨˊ ㄉㄞˋ',ic:'🧺',cat:'clothes',tags:['night'],shared:true},
+  {id:10,label:'泳衣',zy:'ㄩㄥˇ ㄧ',ic:'🩱',cat:'swim',tags:['swim']},
+  {id:11,label:'泳帽',zy:'ㄩㄥˇ ㄇㄠˋ',ic:'🏊',cat:'swim',tags:['swim']},
+  {id:12,label:'浴巾',zy:'ㄩˋ ㄐㄧㄣ',ic:'🛁',cat:'swim',tags:['swim']},
+  {id:18,label:'睡衣',zy:'ㄕㄨㄟˋ ㄧ',ic:'👘',cat:'sleep',tags:['night'],perDay:true},
+  {id:19,label:'睡褲',zy:'ㄕㄨㄟˋ ㄎㄨˋ',ic:'🩳',cat:'sleep',tags:['night'],perDay:true},
+  {id:20,label:'棉被',zy:'ㄇㄧㄢˊ ㄅㄟˋ',ic:'🛏️',cat:'sleep',tags:['night']},
+  {id:21,label:'枕頭',zy:'ㄓㄣˇ ˙ㄊㄡ',ic:'💤',cat:'sleep',tags:['night']},
+  {id:22,label:'狐狐（安撫巾）',zy:'ㄏㄨˊ ㄏㄨˊ ㄢ ㄈㄨˇ ㄐㄧㄣ',ic:'🦊',cat:'sleep',tags:['night'],hasChild:true},
+  {id:23,label:'出門前確認狐狐有帶到',zy:'ㄔㄨ ㄇㄣˊ ㄑㄧㄢˊ ㄑㄩㄝˋ ㄖㄣˋ ㄏㄨˊ ㄏㄨˊ ㄧㄡˇ ㄉㄞˋ ㄉㄠˋ',cat:'sleep',tags:['night'],todo:true},
+  {id:30,label:'墨鏡',zy:'ㄇㄛˋ ㄐㄧㄥˋ',ic:'🕶️',cat:'bag',tags:['always']},
+  {id:31,label:'帽子',zy:'ㄇㄠˋ ˙ㄗ',ic:'🧢',cat:'bag',tags:['always']},
+  {id:32,label:'水壺',zy:'ㄕㄨㄟˇ ㄏㄨˊ',ic:'🥤',cat:'bag',tags:['always'],hasChild:true},
+  {id:33,label:'出門前裝滿水',zy:'ㄔㄨ ㄇㄣˊ ㄑㄧㄢˊ ㄓㄨㄤ ㄇㄢˇ ㄕㄨㄟˇ',cat:'bag',tags:['always'],todo:true},
+  {id:34,label:'衛生紙',zy:'ㄨㄟˋ ㄕㄥ ㄓˇ',ic:'🧻',cat:'bag',tags:['always']},
+  {id:40,label:'牙膏',zy:'ㄧㄚˊ ㄍㄠ',ic:'🧴',cat:'hygiene',tags:['night'],shared:true},
+  {id:41,label:'電動牙刷',zy:'ㄉㄧㄢˋ ㄉㄨㄥˋ ㄧㄚˊ ㄕㄨㄚ',ic:'🪥',cat:'hygiene',tags:['night'],hasChild:true},
+  {id:42,label:'刷頭',zy:'ㄕㄨㄚ ㄊㄡˊ',cat:'hygiene',tags:['night'],sub:true},
+  {id:43,label:'電動牙刷確認有電',zy:'ㄉㄧㄢˋ ㄉㄨㄥˋ ㄧㄚˊ ㄕㄨㄚ ㄑㄩㄝˋ ㄖㄣˋ ㄧㄡˇ ㄉㄧㄢˋ',cat:'hygiene',tags:['night'],todo:true},
+  {id:60,label:'小外套',zy:'ㄒㄧㄠˇ ㄨㄞˋ ㄊㄠˋ',ic:'🧥',cat:'train',tags:['train']},
+  {id:50,label:'iPad',zy:'',ic:'📱',cat:'study',tags:['eng'],onlyKid:'a',hasChild:true},
+  {id:51,label:'充電線',zy:'ㄔㄨㄥ ㄉㄧㄢˋ ㄒㄧㄢˋ',ic:'🔌',cat:'study',tags:['eng'],onlyKid:'a',sub:true},
+  {id:52,label:'記得先充電',zy:'ㄐㄧˋ ˙ㄉㄜ ㄒㄧㄢ ㄔㄨㄥ ㄉㄧㄢˋ',cat:'study',tags:['eng'],onlyKid:'a',todo:true},
+  {id:53,label:'耳機',zy:'ㄦˇ ㄐㄧ',ic:'🎧',cat:'study',tags:['eng'],onlyKid:'a'}
+];
+
+const labelMap={always:'基本',night:'過夜',swim:'游泳',train:'火車／高鐵',eng:'英文課'};
+const answers={who:null,days:null,swim:null,train:null,eng:null};
+let activeItems=[],activeTags=[],activeKids=[],currentKid=null,days=1,nights=0,sets=2,showZy=true,isAll=false;
+const STORAGE_KEY='kids_packing_history';
+const PROGRESS_KEY='kids_packing_progress';
+const ZY_KEY='kids_packing_zhuyin';
+
+function switchTab(id){
+  document.getElementById('checklist-tab').style.display=id==='checklist-tab'?'block':'none';
+  document.getElementById('history-tab').style.display=id==='history-tab'?'block':'none';
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&id==='checklist-tab')||(i===1&&id==='history-tab')));
+  if(id==='history-tab') renderHistory();
+}
+
+function zhuyin(s){
+  let tone='',base=s;
+  if(base.charAt(0)==='˙'){tone='˙';base=base.slice(1);}
+  else if(/[ˊˇˋ]$/.test(base)){tone=base.slice(-1);base=base.slice(0,-1);}
+  const lt=tone==='˙';
+  return '<span class="rb-z'+(lt?' lt':'')+'"><span class="zb">'+base+'</span>'+
+    (tone?'<span class="tn'+(lt?' lt':'')+'">'+tone+'</span>':'')+'</span>';
+}
+
+function ruby(text,zy){
+  if(!showZy||!zy) return text;
+  const syl=zy.trim().split(/\s+/);
+  let i=0,out='';
+  for(const ch of text){
+    if(/[㐀-鿿]/.test(ch)&&i<syl.length){
+      out+='<span class="rb"><span class="rb-c">'+ch+'</span>'+zhuyin(syl[i++])+'</span>';
+    }else{
+      out+=ch;
+    }
+  }
+  return out;
+}
+
+function annotateStatic(){
+  document.querySelectorAll('[data-zy]').forEach(el=>{
+    if(el.dataset.raw===undefined) el.dataset.raw=el.textContent;
+    el.innerHTML=showZy?ruby(el.dataset.raw,el.dataset.zy):el.dataset.raw;
+  });
+}
+
+function toggleZhuyin(){
+  showZy=!showZy;
+  localStorage.setItem(ZY_KEY,showZy?'1':'0');
+  document.getElementById('zy-btn').classList.toggle('on',showZy);
+  annotateStatic();
+  render();
+}
+
+function setupQ(groupId,key){
+  document.getElementById(groupId).addEventListener('click',e=>{
+    const opt=e.target.closest('.q-opt');
+    if(!opt)return;
+    document.querySelectorAll('#'+groupId+' .q-opt').forEach(o=>o.classList.remove('selected'));
+    opt.classList.add('selected');
+    answers[key]=opt.dataset.val;
+    if(key==='days'){
+      const cust=opt.dataset.val==='custom';
+      document.getElementById('days-custom').style.display=cust?'block':'none';
+      if(cust){
+        answers.days=readCustomDays();
+        setTimeout(()=>document.getElementById('days-input').focus(),0);
+      }
+      updateDaysHint();
+    }
+    if(key==='who'){
+      const hasA=opt.dataset.val!=='b';
+      document.getElementById('qb-eng').classList.toggle('dimmed',!hasA);
+      if(!hasA){
+        answers.eng='no';
+        document.querySelectorAll('#q-eng .q-opt').forEach(o=>o.classList.remove('selected'));
+      }else{
+        const sel=document.querySelector('#q-eng .q-opt.selected');
+        answers.eng=sel?sel.dataset.val:null;
+      }
+    }
+    checkReady();
+  });
+}
+
+function readCustomDays(){
+  const v=parseInt(document.getElementById('days-input').value,10);
+  return (v>=1&&v<=30)?String(v):null;
+}
+
+function updateDaysHint(){
+  const d=parseInt(answers.days,10);
+  const h=document.getElementById('days-hint');
+  if(!d){h.textContent='';return;}
+  if(d===1){h.textContent='→ 一人 2 套衣服（1 天穿的 + 1 套備用），當天來回，不帶睡覺和盥洗用品';return;}
+  const n=d-1,s=d+1;
+  h.textContent='→ '+d+' 天 '+n+' 夜：一人 '+s+' 套衣服（多帶 1 套備用）、'+d+' 套睡衣睡褲，會帶睡覺用品和盥洗用品'+
+    (s>=6?'（衣服不少，中途有得洗的話可以少帶幾套）':'');
+}
+
+function checkReady(){document.getElementById('start-btn').disabled=!Object.values(answers).every(v=>v!==null);}
+
+function expand(){
+  const out=[];
+  activeKids.forEach(k=>{
+    BASE_ITEMS.forEach(it=>{
+      if(!it.tags.some(t=>activeTags.includes(t))) return;
+      if(it.onlyKid&&it.onlyKid!==k) return;
+      if(it.shared&&k!==activeKids[0]) return;
+      out.push({...it,kid:k,uid:k+'-'+it.id,checked:false});
+    });
+  });
+  return out;
+}
+
+function renderTags(){
+  document.getElementById('tags').innerHTML=
+    activeKids.map(k=>'<span class="tag">'+KIDS[k].name+'</span>').join('')+
+    activeTags.filter(t=>t!=='always').map(t=>'<span class="tag">'+(labelMap[t]||t)+'</span>').join('')+
+    '<span class="tag">'+days+' 天'+(nights?' '+nights+' 夜':'')+'</span>'+
+    '<span class="tag">'+sets+' 套衣服</span>'+
+    (nights?'<span class="tag">'+days+' 套睡衣</span>':'');
+}
+
+function buildAll(){
+  activeTags=['always','night','swim','train','eng'];
+  activeKids=['a','b'];days=4;nights=3;sets=5;currentKid='a';isAll=true;
+  activeItems=expand();
+  document.getElementById('tags').innerHTML='<span class="tag">全部項目</span>';
+  showList();
+}
+
+function buildChecklist(){
+  days=parseInt(answers.days,10)||1;
+  nights=Math.max(0,days-1);
+  sets=days+1;
+  activeTags=['always'];
+  if(days>=2) activeTags.push('night');
+  if(answers.swim==='yes') activeTags.push('swim');
+  if(answers.train==='yes') activeTags.push('train');
+  if(answers.eng==='yes') activeTags.push('eng');
+  activeKids=answers.who==='both'?['a','b']:[answers.who];
+  currentKid=activeKids[0];isAll=false;
+  activeItems=expand();
+  renderTags();
+  showList();
+}
+
+function showList(){
+  document.getElementById('wizard').style.display='none';
+  document.getElementById('success-banner').style.display='none';
+  document.getElementById('resume-banner').style.display='none';
+  document.getElementById('checklist-view').style.display='block';
+  render();
+  saveProgress();
+  window.scrollTo(0,0);
+}
+
+function goBack(){
+  clearProgress();
+  document.getElementById('checklist-view').style.display='none';
+  document.getElementById('wizard').style.display='flex';
+  window.scrollTo(0,0);
+}
+
+function render(){
+  const kidRow=document.getElementById('kid-row');
+  if(activeKids.length>1){
+    kidRow.style.display='flex';
+    kidRow.innerHTML=activeKids.map(k=>{
+      const ki=activeItems.filter(i=>i.kid===k);
+      const d=ki.filter(i=>i.checked).length;
+      return '<div class="kid-tab'+(k===currentKid?' active':'')+'" onclick="switchKid(\''+k+'\')">'+
+        ruby(KIDS[k].name,KIDS[k].zy)+
+        '<span class="kid-count">'+d+'/'+ki.length+'</span></div>';
+    }).join('');
+  }else{kidRow.style.display='none';}
+
+  const mine=activeItems.filter(i=>i.kid===currentKid);
+  const total=activeItems.length,done=activeItems.filter(i=>i.checked).length;
+  document.getElementById('progress-label').textContent=done+' / '+total+' 已確認';
+  document.getElementById('progress-fill').style.width=(total?(done/total*100):0)+'%';
+
+  const cl=document.getElementById('checklist');cl.innerHTML='';
+  const usedCats=[...new Set(mine.map(i=>i.cat))];
+  usedCats.forEach(k=>{
+    const m=CATS[k],ci=mine.filter(i=>i.cat===k),dc=ci.filter(i=>i.checked).length;
+    const div=document.createElement('div');div.className='category';
+    div.innerHTML='<div class="cat-header" style="color:'+m.color+'"><i class="ti '+m.icon+'"></i>'+
+      ruby(m.label,m.zy)+
+      '<span class="cat-count">'+dc+'/'+ci.length+'</span></div><div class="cat-items"></div>';
+    cl.appendChild(div);
+    const grid=div.querySelector('.cat-items');
+    ci.forEach(item=>{
+      const el=document.createElement('label');
+      let cls='item'+(item.checked?' checked':'');
+      if(item.todo) cls+=' todo';
+      else if(item.sub) cls+=' sub';
+      else if(item.hasChild) cls+=' full';
+      el.className=cls;
+      const qty=item.perSet?'<span class="item-qty">×'+sets+'</span>':
+        (item.perDay?'<span class="item-qty">×'+days+'</span>':
+        (item.shared?'<span class="item-qty">共用</span>':''));
+      const ic=item.ic?'<span class="item-ic">'+item.ic+'</span>':'';
+      el.innerHTML='<input type="checkbox"'+(item.checked?' checked':'')+' onchange="toggle(\''+item.uid+'\')">'+
+        ic+'<span class="item-label">'+ruby(item.label,item.zy)+'</span>'+qty;
+      grid.appendChild(el);
+    });
+  });
+}
+
+function switchKid(k){currentKid=k;render();}
+
+function saveProgress(){
+  localStorage.setItem(PROGRESS_KEY,JSON.stringify({
+    activeTags,activeItems,activeKids,currentKid,days,nights,sets,
+    tripName:document.getElementById('trip-name').value.trim(),
+    answers:{...answers}
+  }));
+}
+
+function clearProgress(){localStorage.removeItem(PROGRESS_KEY);}
+
+function restoreProgress(){
+  const saved=JSON.parse(localStorage.getItem(PROGRESS_KEY)||'null');
+  if(!saved||!saved.activeItems||!saved.activeItems.length) return;
+  activeTags=saved.activeTags;activeItems=saved.activeItems;
+  activeKids=saved.activeKids||['a'];currentKid=saved.currentKid||activeKids[0];
+  days=saved.days||1;nights=(saved.nights!==undefined)?saved.nights:Math.max(0,days-1);sets=saved.sets||days+1;
+  if(saved.tripName) document.getElementById('trip-name').value=saved.tripName;
+  Object.assign(answers,saved.answers);
+  renderTags();
+  document.getElementById('wizard').style.display='none';
+  document.getElementById('success-banner').style.display='none';
+  document.getElementById('checklist-view').style.display='block';
+  const resume=document.getElementById('resume-banner');
+  if(resume) resume.style.display='block';
+  render();
+}
+
+function toggle(uid){const i=activeItems.find(x=>x.uid===uid);if(i)i.checked=!i.checked;render();saveProgress();}
+function resetAll(){activeItems.forEach(i=>i.checked=false);render();saveProgress();}
+
+function submitRecord(){
+  const now=new Date();
+  const pad=n=>String(n).padStart(2,'0');
+  const dateStr=now.getFullYear()+'/'+pad(now.getMonth()+1)+'/'+pad(now.getDate())+' '+pad(now.getHours())+':'+pad(now.getMinutes());
+  const tripName=document.getElementById('trip-name').value.trim();
+  const record={date:dateStr,name:tripName,kids:[...activeKids],days,nights,sets,tags:[...activeTags],
+    items:activeItems.map(i=>({label:i.label,kid:i.kid,checked:i.checked,sub:!!i.sub,todo:!!i.todo}))};
+  const history=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');
+  history.unshift(record);
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(history));
+  clearProgress();
+  const banner=document.getElementById('success-banner');
+  banner.querySelector('p').textContent='已記錄 — '+dateStr;
+  banner.style.display='block';
+  window.scrollTo(0,0);
+}
+
+function renderHistory(){
+  const list=document.getElementById('history-list');
+  const history=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');
+  if(!history.length){list.innerHTML='<div class="empty-history">尚無出行記錄</div>';return;}
+  list.innerHTML=history.map((r,idx)=>
+    '<div class="history-entry">'+
+    '<div style="display:flex;align-items:center;justify-content:space-between">'+
+    '<div class="history-date">'+r.date+(r.name?' · '+r.name:'')+'</div>'+
+    '<button onclick="deleteRecord('+idx+')" style="font-size:12px;color:#C4B4A4;background:none;border:none;cursor:pointer;letter-spacing:.04em">刪除</button>'+
+    '</div>'+
+    '<div class="history-tags">'+
+      (r.kids||[]).map(k=>'<span class="history-tag">'+KIDS[k].name+'</span>').join('')+
+      r.tags.filter(t=>t!=='always').map(t=>'<span class="history-tag">'+(labelMap[t]||t)+'</span>').join('')+
+      (r.days?'<span class="history-tag">'+r.days+' 天'+(r.nights?' '+r.nights+' 夜':'')+'</span>':'')+
+      (r.sets?'<span class="history-tag">'+r.sets+' 套衣服</span>':'')+
+      (r.nights?'<span class="history-tag">'+r.days+' 套睡衣</span>':'')+
+    '</div>'+
+    (r.kids||['a']).map(k=>
+      '<div class="history-items"><span style="color:#A89484;margin-right:8px">'+KIDS[k].name+'</span>'+
+      r.items.filter(i=>i.kid===k&&!i.sub&&!i.todo).map(i=>'<span class="'+(i.checked?'history-checked':'history-unchecked')+'" style="display:inline-block;margin-right:12px">'+(i.checked?'✓ ':'')+i.label+'</span>').join('')+
+      '</div>').join('')+
+    '</div>'
+  ).join('');
+}
+
+function deleteRecord(idx){
+  const history=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');
+  history.splice(idx,1);
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(history));
+  renderHistory();
+}
+
+showZy=localStorage.getItem(ZY_KEY)!=='0';
+document.getElementById('zy-btn').classList.toggle('on',showZy);
+annotateStatic();
+setupQ('q-who','who');setupQ('q-days','days');setupQ('q-swim','swim');setupQ('q-train','train');setupQ('q-eng','eng');
+document.getElementById('days-input').addEventListener('input',()=>{
+  answers.days=readCustomDays();
+  updateDaysHint();
+  checkReady();
+});
+restoreProgress();
+</script>
+</body>
+</html>
